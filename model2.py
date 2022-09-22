@@ -58,69 +58,69 @@ for (root2, directories2, files2) in os.walk(dir_path2):
 print(data.shape)
 print(actions)
 
-# x_data = data[:,:,:-1]
-# x_data2 = data2[:,:,:-1]
-# labels = data[:,0,-1]
-# labels2 = data2[:, 0, -1]
-# y_data=tf.keras.utils.to_categorical(labels, num_classes=len(actions))
+x_data = data[:,:,:-1]
+x_data2 = data2[:,:,:-1]
+labels = data[:,0,-1]
+labels2 = data2[:, 0, -1]
+y_data=tf.keras.utils.to_categorical(labels, num_classes=len(actions))
 
-# y_data2 =tf.keras.utils.to_categorical(labels2, num_classes=len(actions))
+y_data2 =tf.keras.utils.to_categorical(labels2, num_classes=len(actions))
 
-# x_data = x_data.astype(np.float32)
-# y_data = labels.astype(np.float32)
+x_data = x_data.astype(np.float32)
+y_data = labels.astype(np.float32)
 
-# x_data2 = x_data2.astype(np.float32)
-# y_data2 = y_data2.astype(np.float32)
+x_data2 = x_data2.astype(np.float32)
+y_data2 = y_data2.astype(np.float32)
 
-# x_train = x_data
-
-
-# x_val = x_data2
-# y_train = y_data
-
-# y_val = y_data2
+x_train = x_data
 
 
-# # model2 = tf.keras.models.Sequential([
-# #    tf.keras.layers.Input(shape=(30,432),name='input'),
-# #    tf.keras.layers.LSTM(20, time_major=False, return_sequences=True),
-# #    tf.keras.layers.Flatten(),
-# #    tf.keras.layers.Dense(3, activation=tf.nn.softmax, name='output')
-# # ])
+x_val = x_data2
+y_train = y_data
+
+y_val = y_data2
+
 
 # model2 = tf.keras.models.Sequential([
-#    tf.keras.layers.Input(shape=(30,524),name='input'),
-#    tf.keras.layers.LSTM(64, time_major=False, return_sequences=True),
-#    tf.keras.layers.Dense(32, activation=tf.nn.relu),
-#    tf.keras.layers.Dense(32, activation=tf.nn.relu),
-#    tf.keras.layers.Dense(32, activation=tf.nn.relu),
-#    tf.keras.layers.Dense(32, activation=tf.nn.relu),
-#    tf.keras.layers.Dropout(0.3),
-#    tf.keras.layers.Dense(32, activation=tf.nn.relu),
+#    tf.keras.layers.Input(shape=(30,432),name='input'),
+#    tf.keras.layers.LSTM(20, time_major=False, return_sequences=True),
 #    tf.keras.layers.Flatten(),
-#    tf.keras.layers.Dense(33, activation=tf.nn.softmax, name='output')
+#    tf.keras.layers.Dense(3, activation=tf.nn.softmax, name='output')
 # ])
 
-# model2.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-# model2.summary()
+model2 = tf.keras.models.Sequential([
+   tf.keras.layers.Input(shape=(30,524),name='input'),
+   tf.keras.layers.LSTM(64, time_major=False, return_sequences=True),
+   tf.keras.layers.Dense(32, activation=tf.nn.relu),
+   tf.keras.layers.Dense(32, activation=tf.nn.relu),
+   tf.keras.layers.Dense(32, activation=tf.nn.relu),
+   tf.keras.layers.Dense(32, activation=tf.nn.relu),
+   tf.keras.layers.Dropout(0.3),
+   tf.keras.layers.Dense(32, activation=tf.nn.relu),
+   tf.keras.layers.Flatten(),
+   tf.keras.layers.Dense(33, activation=tf.nn.softmax, name='output')
+])
 
-# _EPOCHS = 500
+model2.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model2.summary()
 
-# model2.fit(x_train, labels, epochs=_EPOCHS)
+_EPOCHS = 500
 
-# run_model = tf.function(lambda x: model2(x))
-# # This is important, let's fix the input size.
-# BATCH_SIZE = 1
-# STEPS = 30
-# INPUT_SIZE = 524
-# concrete_func = run_model.get_concrete_function(
-#     tf.TensorSpec([BATCH_SIZE, STEPS, INPUT_SIZE], model2.inputs[0].dtype))
+model2.fit(x_train, labels, epochs=_EPOCHS)
 
-# # model directory.
-# MODEL_DIR = "AAA"
-# model2.save(MODEL_DIR, save_format="tf", signatures=concrete_func)
+run_model = tf.function(lambda x: model2(x))
+# This is important, let's fix the input size.
+BATCH_SIZE = 1
+STEPS = 30
+INPUT_SIZE = 524
+concrete_func = run_model.get_concrete_function(
+    tf.TensorSpec([BATCH_SIZE, STEPS, INPUT_SIZE], model2.inputs[0].dtype))
 
-# converter = tf.lite.TFLiteConverter.from_saved_model(MODEL_DIR)
-# #converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
-# tflite_model = converter.convert()
-# open("AAAA.tflite", "wb").write(tflite_model)
+# model directory.
+MODEL_DIR = "AAA"
+model2.save(MODEL_DIR, save_format="tf", signatures=concrete_func)
+
+converter = tf.lite.TFLiteConverter.from_saved_model(MODEL_DIR)
+#converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS, tf.lite.OpsSet.SELECT_TF_OPS]
+tflite_model = converter.convert()
+open("AAAA.tflite", "wb").write(tflite_model)
